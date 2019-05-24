@@ -81,3 +81,15 @@ jobTracker=sandbox-hdp.hortonworks.com\:8032
 
 </code></pre>
 
+X.Job Propreties File(workflow-job.properties)
+--
+<pre><code>
+user.name=mapred
+oozie.use.system.libpath=true
+oozie.wf.application.path=${nameNode}/user/oozie/workflow/practice_06
+queueName=default
+nameNode=hdfs://sandbox-hdp.hortonworks.com:8020
+oozie.libpath=/user/oozie/share/lib/lib_20180201102929/sqoop
+jobTracker=sandbox-hdp.hortonworks.com\:8032
+YMD=20180401
+</code></pre>
