@@ -19,17 +19,33 @@
    <kill name="Kill">
       <message>Action Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
    </kill>
-
-   
-
+   <action name="hive_action_1">
+     <hive2 xmlns="uri:oozie:hive2-action:0.2">
+       <job-tracker>${jobTracker}</job-tracker>
+       <name-node>${nameNode}</name-node>
+       <prepare/>
+       <configuration>
+          <property>
+              <name>mapred.job.queue.name</name>
+              <value>${queueName}</value>
+          </property>
+       </configuration>
+       <jdbc-url>jdbc:hive2://localhost:10000/weblog</jdbc-url>
+       <password>hive</password>
+       <script>lib/stat_accesslog.hql</script>
+       <param>YMD=${YMD}</param>       
+     </hive2>
+     <ok to="end"/>
+     <error to="Kill"/>
+   </action>
    <end name="end"/>
-</workflow-app>   
+</workflow-app>  
 ```
 
 3.Library File(lib/stat_accesslog.hql)
 ---------------------------------------------------------------------------------------------------------------------------
-<pre><code>INSERT OVERWRITE TABLE weblogs.stat_access PARTITION (ymd=${YMD});
-SELECT host, count(host) AS count FROM access_orc WHERE (ymd=${YMD}) GROUP BY host ORDER BY count DESC;
+<pre><code>INSERT OVERWRITE TABLE weblogs.stat_access PARTITION (ymd=${YMD})
+SELECT remote_host, count(remote_host) AS count FROM weblogs.access_log_orc WHERE (ymd=${YMD}) GROUP BY remote_host ORDER BY count DESC;
 </code></pre>
 
 4.Coordinator File(coordinator.xml) 
